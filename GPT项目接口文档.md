@@ -12,6 +12,7 @@
 
 - [注册登录](#注册登录)
 - [获取实验](#获取实验)
+- [ChatGPT聊天](#ChatGPT聊天)
 
 ## 注册登录
 
@@ -228,4 +229,35 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
 | content | string      | 问题内容 |
 | choice  | string list | 选项内容 |
 
-### 
+## ChatGPT聊天
+
+**接口描述：** 用于调用chatgpt聊天相关操作
+
+**请求URL：** /api/chat
+
+**请求方式：** POST
+
+### 请求参数：
+
+| 参数名      | 必选  | 类型     | 说明       |
+| -------- | --- | ------ | -------- |
+| email    | 是   | string | 邮箱       |
+| password | 是   | string | password |
+
+### 返回示例：
+
+```json
+{
+    "code": 10000,
+    "info": {
+        "token": "D01B0E972A264FA08EA8F12EF1C0DAB6",
+    },
+    "message": "成功"
+}
+```
+
+### 返回参数说明：
+
+| 参数名   | 类型     | 说明         |
+| ----- | ------ | ---------- |
+| token | string | 生成的登录token |
