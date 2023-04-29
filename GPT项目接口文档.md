@@ -159,7 +159,7 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
                 "next_page": 6,
                 "yes_page": 0,
                 "no_page": 0,
-                "countdown": 0,
+                "countdown": 0,
                 "answser_page": 1,
                 "answer_time_countdown": 240
             }
