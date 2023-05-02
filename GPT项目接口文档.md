@@ -192,12 +192,12 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
 
 ### experiment
 
-| 参数名                             | 类型           | 说明                         |
-| ------------------------------- | ------------ | -------------------------- |
-| id                              | int          | 实验id                       |
+| 参数名                          | 类型         | 说明                                                 |
+| ------------------------------- | ------------ | ---------------------------------------------------- |
+| id                              | int          | 实验id,当id为0代表当前无实验                         |
 | experiment_topic                | string       | 实验主题，实验中的聊天页的问题部分可以取这个字段的值 |
-| [guide_pages](#guide_pages)     | object array | 提示信息页                      |
-| [questionnaire](#questionnaire) | object       | 问卷页内容                      |
+| [guide_pages](#guide_pages)     | object array | 提示信息页                                           |
+| [questionnaire](#questionnaire) | object       | 问卷页内容                                           |
 
 ### guide_pages
 
