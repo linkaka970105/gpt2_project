@@ -27,7 +27,12 @@ func (c *ChatController) Chat() {
 			return
 		}
 	}
-	reply := "gpt的回复内容：" + params.Message
+	//reply := "gpt的回复内容：" + params.Message
+	reply, err := models.GetGptResp(uid, params.Message)
+	if err != nil {
+		c.echoErr(err)
+		return
+	}
 	if params.Id > 0 {
 		err := models.ChatRecord(uid, params.Id, params.Message, reply)
 		if err != nil {

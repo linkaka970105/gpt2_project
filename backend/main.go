@@ -1,9 +1,9 @@
 package main
 
 import (
+	"github.com/astaxie/beego"
 	_ "gpt2_project/backend/models"
 	_ "gpt2_project/backend/routers"
-	"github.com/astaxie/beego"
 )
 
 func main() {

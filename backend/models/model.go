@@ -4,9 +4,13 @@ import (
 	"github.com/astaxie/beego/orm"
 	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
+	openai "github.com/sashabaranov/go-openai"
+	"net/http"
+	"net/url"
 )
 
 var rt *redis.Client
+var gptClient *openai.Client
 
 func init() {
 	//orm.RegisterDataBase("default", "mysql", "root:123456@tcp(127.0.0.1:3306)/test?charset=utf8")
@@ -21,6 +25,20 @@ func init() {
 		panic(err)
 	}
 	rt = redisCli
+
+	config := openai.DefaultConfig("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")
+	proxyUrl, err := url.Parse("http://127.0.0.1:12333")
+	if err != nil {
+		panic(err)
+	}
+	transport := &http.Transport{
+		Proxy: http.ProxyURL(proxyUrl),
+	}
+	config.HTTPClient = &http.Client{
+		Transport: transport,
+	}
+
+	gptClient = openai.NewClientWithConfig(config)
 }
 
 // NewRedis new redis pool
@@ -37,6 +55,10 @@ func NewRedis(addr string, db int) (rt *redis.Client, err error) {
 	return
 }
 
-func RedisCli() *redis.Client{
+func RedisCli() *redis.Client {
 	return rt
+}
+
+func GptCli() *openai.Client {
+	return gptClient
 }

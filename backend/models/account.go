@@ -187,6 +187,10 @@ func NewToken(uid int) (token string, err error) {
 		if err = RedisCli().Del(makeTokenUIDKey(oldToken)).Err(); err != nil {
 			return
 		}
+		if err = RedisCli().Del(oldToken).Err(); err != nil {
+			// 删除历史聊天记录
+			return
+		}
 	}
 	// 保存新token
 	if err = saveToken(RedisCli(), uid, token, defaultTokenExpireSec); err != nil {
