@@ -26,7 +26,7 @@ func init() {
 	}
 	rt = redisCli
 
-	config := openai.DefaultConfig("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")
+	config := openai.DefaultConfig("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")
 	proxyUrl, err := url.Parse("http://127.0.0.1:12333")
 	if err != nil {
 		panic(err)
