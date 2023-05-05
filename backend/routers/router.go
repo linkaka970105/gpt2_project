@@ -2,10 +2,16 @@ package routers
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/plugins/cors"
 	"gpt2_project/backend/controllers"
 )
 
 func init() {
+	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
+		AllowAllOrigins: true,
+		AllowMethods:    []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"},
+		AllowHeaders:    []string{"Origin", "Accept", "Content-Type", "Authorization", "AccessToken", "Authentication"},
+	}))
 	ns := beego.NewNamespace("/api",
 		beego.NSBefore(controllers.CheckAuthorization),
 		beego.NSNamespace("/account",

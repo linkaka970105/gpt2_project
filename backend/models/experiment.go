@@ -147,7 +147,7 @@ func QuestionReply(uid, qnid int, answers []Answer) (err error) {
 	args := make([]interface{}, 0)
 	for i := 0; i < len(answers); i++ {
 		placeholders = append(placeholders, placeholder)
-		args = append(args, uid, qnid, answers[i].Id, answers[i].Text, util.IntArrayToBinary(util.Index2Int(answers[i].Answer)))
+		args = append(args, uid, qnid, answers[i].Id, strings.Replace(answers[i].Text, "'", "''", -1), util.IntArrayToBinary(util.Index2Int(answers[i].Answer)))
 	}
 	execSql = fmt.Sprintf(execSql, strings.Join(placeholders, ","))
 	_, err = o.Raw(execSql, args...).Exec()
@@ -155,6 +155,8 @@ func QuestionReply(uid, qnid int, answers []Answer) (err error) {
 }
 
 func ChatRecord(uid, exid int, message, reply string) (err error) {
+	message = strings.Replace(message, "'", "''", -1)
+	reply = strings.Replace(reply, "'", "''", -1)
 	o := orm.NewOrm()
 	_, err = o.Raw("insert into gpt_project.experiment_chat_history (uid, exid, query, gpt_reply) values (?, ?, ?, ?)",
 		uid, exid, message, reply).Exec()

@@ -3,11 +3,12 @@ module gpt2_project/backend
 go 1.20
 
 require (
-	github.com/astaxie/beego v1.12.2
+	github.com/astaxie/beego v1.12.3
 	github.com/beego/beego/v2 v2.0.2
 	github.com/go-redis/redis v6.14.2+incompatible
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/google/uuid v1.2.0
+	github.com/sashabaranov/go-openai v1.9.3
 )
 
 require (
@@ -21,7 +22,6 @@ require (
 	github.com/prometheus/client_model v0.2.0 // indirect
 	github.com/prometheus/common v0.26.0 // indirect
 	github.com/prometheus/procfs v0.6.0 // indirect
-	github.com/sashabaranov/go-openai v1.9.3 // indirect
 	github.com/shiena/ansicolor v0.0.0-20200904210342-c7312218db18 // indirect
 	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a // indirect
 	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4 // indirect
