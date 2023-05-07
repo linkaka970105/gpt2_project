@@ -43,6 +43,8 @@ type Question struct {
 	Content    string   `json:"content"`
 	Choice     []string `json:"choice"`
 	Choices    string   `json:"-"`
+	ScoreText  string   `json:"-"`
+	ScoreTexts []string `json:"score_text"`
 }
 
 type Answer struct {
@@ -113,6 +115,9 @@ order by ct desc`
 		for i := range e.Questionnaire.Questions {
 			if e.Questionnaire.Questions[i].Choices != "" {
 				e.Questionnaire.Questions[i].Choice = strings.Split(e.Questionnaire.Questions[i].Choices, ";")
+			}
+			if e.Questionnaire.Questions[i].ScoreText != "" {
+				e.Questionnaire.Questions[i].ScoreTexts = strings.Split(e.Questionnaire.Questions[i].ScoreText, ";")
 			}
 		}
 		return
