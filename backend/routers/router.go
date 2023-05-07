@@ -10,7 +10,7 @@ func init() {
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowAllOrigins:  true,
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Accept", "Content-Type", "Authorization", "AccessToken", "Authentication"},
+		AllowHeaders:     []string{"Origin", "Accept", "Content-Type", "Authorization", "AccessToken", "Authentication", "X-Token", "x-token"},
 		AllowCredentials: true,
 	}))
 	ns := beego.NewNamespace("/api",
