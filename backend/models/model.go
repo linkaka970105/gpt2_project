@@ -5,8 +5,6 @@ import (
 	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
 	openai "github.com/sashabaranov/go-openai"
-	"net/http"
-	"net/url"
 )
 
 var rt *redis.Client
@@ -26,17 +24,18 @@ func init() {
 	}
 	rt = redisCli
 
-	config := openai.DefaultConfig("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")
-	proxyUrl, err := url.Parse("http://127.0.0.1:12333")
-	if err != nil {
-		panic(err)
-	}
-	transport := &http.Transport{
-		Proxy: http.ProxyURL(proxyUrl),
-	}
-	config.HTTPClient = &http.Client{
-		Transport: transport,
-	}
+	config := openai.DefaultConfig("fk193074-slhtDybpXZkkvJronLZ0sa0oX4azh7aD")
+	config.BaseURL = "https://openai.api2d.net/v1"
+	//proxyUrl, err := url.Parse("http://127.0.0.1:12333")
+	//if err != nil {
+	//	panic(err)
+	//}
+	//transport := &http.Transport{
+	//	Proxy: http.ProxyURL(proxyUrl),
+	//}
+	//config.HTTPClient = &http.Client{
+	//	Transport: transport,
+	//}
 
 	gptClient = openai.NewClientWithConfig(config)
 }
