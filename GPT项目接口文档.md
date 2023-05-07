@@ -1,4 +1,4 @@
-# GPT项目接口文档
+# ,GPT项目接口文档
 
 ## 一些流程说明
 
@@ -160,7 +160,7 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
                 "yes_or_no": 0,
                 "chat": 1,
                 "chat_times": 0,
-                "next_page": 6,
+                "next_page": 0,
                 "yes_page": 0,
                 "no_page": 0,
                 "countdown": 0,
@@ -179,7 +179,10 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
                         "安踏",
                         "李宁",
                         "特步"
-                    ]
+                    ],
+                    "type": 1,
+                    "score_type": 0,
+                    "is_required": 1,
                 }
             ]
         }
@@ -220,6 +223,12 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
 | answer_page           | int    | 是否是回答页面，1为是，0为否，如果是聊天页面则在完成聊天后显示答案提交框，供提交实验答案                         |
 | answer_time_countdown | int    | 回答问题的时间限制，0代表不做限制，60代表限制60s回答时间，建议也显示个倒计时，超过限定时间则不允许提交答案（提交按钮置灰之类的操作） |
 
+### 特殊说明：
+
+```
+当next=1和next_page=0时代表引导页已经结束，next的下一跳就是问卷页
+```
+
 ### questionnaire
 
 | 参数名                     | 类型           | 说明     |
@@ -230,11 +239,14 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
 
 ### questions
 
-| 参数名     | 类型          | 说明   |
-| ------- | ----------- | ---- |
-| id      | int         | 实验id |
-| content | string      | 问题内容 |
-| choice  | string list | 选项内容 |
+| 参数名      | 类型         | 说明                                             |
+| ----------- | ------------ | ------------------------------------------------ |
+| id          | int          | 实验id                                           |
+| content     | string       | 问题内容                                         |
+| choice      | string array | 选项内容，选择题和评分题的内容都用在这个选项     |
+| type        | int          | 题目类型，1为单选，2为多选，3为填空，4为评分题   |
+| score_type  | int          | 评分题的分数量级，1代表1-5分，2为1-7分，3为1-4分 |
+| is_required | int          | 是否必做题，1为是，0为否                         |
 
 ## ChatGPT聊天
 
@@ -327,12 +339,22 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
                 1,
                 2
             ],
-            "text":""
+            "text":"",
+            "scores": []
         },
         {
             "id": 2,
             "answer": [],
-            "text":"填空题答案"
+            "text":"填空题答案",
+            "scores": []
+        },
+        {
+            "id": 3,
+            "answer": [],
+            "text":"",
+            "scores": [
+               7,5,4 
+            ]
         }
     ]
 }
@@ -340,7 +362,8 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
 | 参数名  | 必选 | 类型   | 说明 |
 | ------- | ---- | ------ | ---- |
 | id | 是   | int | 问卷id |
-| answers | 是   | object array | 问卷答案 |
+| answers | 是   | int array | 问卷选择题答案 |
+| scores | 是 | int array | 评分题答案，如有3个评分栏目，则[7,5,4]代表1-3栏分别为7分，5分，4分 |
 
 ### answers
 
