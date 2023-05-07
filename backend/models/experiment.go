@@ -91,6 +91,10 @@ order by ct desc`
 		if err != nil {
 			return
 		}
+		for i := 0; i < len(e.GuidePages); i++ {
+			e.GuidePages[i].Content = strings.Replace(strings.Replace(e.GuidePages[i].Content, "&nbsp;", " ", -1), "<br>", " ", -1)
+		}
+
 		sqlTpl = `select *
 			from gpt_project.questionnaire
 			where exid = ? limit 1`
@@ -113,6 +117,7 @@ order by ct desc`
 			return
 		}
 		for i := range e.Questionnaire.Questions {
+			e.Questionnaire.Questions[i].Content = strings.Replace(strings.Replace(e.Questionnaire.Questions[i].Content, "&nbsp;", " ", -1), "<br>", " ", -1)
 			if e.Questionnaire.Questions[i].Choices != "" {
 				e.Questionnaire.Questions[i].Choice = strings.Split(e.Questionnaire.Questions[i].Choices, ";")
 			}
