@@ -56,15 +56,40 @@ create table gpt_project.questionnaire
 ) comment '问卷调查表' charset = utf8;
 create table gpt_project.question
 (
-    id      int(11) unsigned auto_increment
+    id          int(11) unsigned auto_increment
         primary key,
-    qnid    int           default 0                 not null comment '问卷调查id',
-    content varchar(2048) default ''                not null comment '问题文本',
-    choices varchar(4096) default ''                not null comment '选择项集合，用;进行分隔',
-    ct      datetime      default CURRENT_TIMESTAMP not null comment '创建时间',
-    ut      datetime      default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
+    qnid        int           default 0                 not null comment '问卷调查id',
+    type        int           default 0                 not null comment '题目类型，1为单选，2为多选，3为填空，4为评分题',
+    is_required int           default 0                 not null comment '是否必做题，1为是，0为否',
+    content     varchar(2048) default ''                not null comment '问题文本',
+    choices     varchar(4096) default ''                not null comment '选择项集合，用;进行分隔',
+    ct          datetime      default CURRENT_TIMESTAMP not null comment '创建时间',
+    ut          datetime      default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
 
 ) comment '问卷问题表' charset = utf8;
+create table gpt_project.question_score_id
+(
+    sid  int(11) unsigned auto_increment primary key,
+    uid  int      default 0                 not null comment '用户uid',
+    qnid int      default 0                 not null comment '问卷id',
+    qid  int      default 0                 not null comment '问卷问题id',
+    ct   datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    ut   datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    UNIQUE KEY `uid_qid` (`uid`, `qid`)
+) comment '评分问题id表' charset = utf8;
+
+create table gpt_project.question_scoring
+(
+    id    int(11) unsigned auto_increment primary key,
+    sid   int      default 0                 not null comment '评分题答案id',
+    no    tinyint  default 0                 not null comment '评分题第几个选项',
+    score tinyint  default 0                 not null comment '分数',
+    uid   int      default 0                 not null comment '用户uid',
+    qnid  int      default 0                 not null comment '问卷id',
+    qid   int      default 0                 not null comment '问卷问题id',
+    ct    datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    ut    datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
+) comment '评分题答案' charset = utf8;
 
 create table gpt_project.experiment_reply
 (
@@ -87,6 +112,7 @@ create table gpt_project.question_reply
     qid        int           default 0                 not null comment '问卷问题id',
     reply_text varchar(2048) default ''                not null comment '填空题文本',
     choices    int           default 0                 not null comment '选择题答案选择,用二进制位代表实际选择,支持多选,如1代表选择了A，2代表选择了B，4代表选择了C，8代表选择了D，3=1+2代表选择了A+B',
+    sid        int           default 0                 not null comment '评分题答案id',
     ct         datetime      default CURRENT_TIMESTAMP not null comment '创建时间',
     ut         datetime      default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
 ) comment '问卷问题选择填写表' charset = utf8;

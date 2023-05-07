@@ -14,12 +14,6 @@ type experimentReplyParams struct {
 	Answer string `form:"answer" json:"answer"`
 }
 
-type Answer struct {
-	ID     int    `json:"id"`
-	Answer []int  `json:"answer"`
-	Text   string `json:"text"`
-}
-
 type questionnaireReq struct {
 	ID      int             `json:"id"`
 	Answers []models.Answer `json:"answers"`

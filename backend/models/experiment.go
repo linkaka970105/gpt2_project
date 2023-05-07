@@ -36,15 +36,19 @@ type Questionnaire struct {
 }
 
 type Question struct {
-	Id      int      `json:"id"`
-	Content string   `json:"content"`
-	Choice  []string `json:"choice"`
-	Choices string   `json:"-"`
+	Id         int      `json:"id"`
+	IsRequired int      `json:"is_required"`
+	Type       int      `json:"type"`
+	ScoreType  int      `json:"score_type"`
+	Content    string   `json:"content"`
+	Choice     []string `json:"choice"`
+	Choices    string   `json:"-"`
 }
 
 type Answer struct {
 	Id     int    `json:"id"`
 	Answer []int  `json:"answer"`
+	Scores []int  `json:"scores"`
 	Text   string `json:"text"`
 }
 
@@ -107,7 +111,9 @@ order by ct desc`
 			return
 		}
 		for i := range e.Questionnaire.Questions {
-			e.Questionnaire.Questions[i].Choice = strings.Split(e.Questionnaire.Questions[i].Choices, ";")
+			if e.Questionnaire.Questions[i].Choices != "" {
+				e.Questionnaire.Questions[i].Choice = strings.Split(e.Questionnaire.Questions[i].Choices, ";")
+			}
 		}
 		return
 	}
@@ -141,16 +147,53 @@ where uid = ?
 
 func QuestionReply(uid, qnid int, answers []Answer) (err error) {
 	o := orm.NewOrm()
-	execSql := `insert into gpt_project.question_reply (uid, qnid, qid, reply_text, choices) values %s`
-	placeholder := "(?, ?, ?, ?, ?)"
+	execSql := `insert into gpt_project.question_reply (uid, qnid, qid, sid, reply_text, choices) values %s`
+	execSqlScore := `insert into gpt_project.question_scoring (sid, no, score, uid, qnid, qid) values %s`
+	placeholder := "(?, ?, ?, ?, ?, ?)"
 	placeholders := make([]string, 0)
+	placeholderScore := "(?, ?, ?, ?, ?, ?)"
+	placeholdersScore := make([]string, 0)
 	args := make([]interface{}, 0)
+	argsScore := make([]interface{}, 0)
 	for i := 0; i < len(answers); i++ {
+		sid := 0
+		if len(answers[i].Scores) > 0 {
+			scoreSql := `insert ignore into gpt_project.question_score_id (uid, qnid, qid)
+			values (?, ?, ?)`
+			_, err = o.Raw(scoreSql, uid, qnid, answers[i].Id).Exec()
+			if err != nil {
+				return
+			}
+			sqlTpl := `select sid
+					from gpt_project.question_score_id
+					where uid = ?
+					  and qid = ?`
+			err = o.Raw(sqlTpl, uid, answers[i].Id).QueryRow(&sid)
+			if err != nil {
+				if err == orm.ErrNoRows {
+					err = nil
+				} else {
+					return
+				}
+			}
+			if sid > 0 {
+				for j := 0; j < len(answers[i].Scores); j++ {
+					placeholdersScore = append(placeholdersScore, placeholderScore)
+					argsScore = append(argsScore, sid, j+1, answers[i].Scores[j], uid, qnid, answers[i].Id)
+				}
+			}
+		}
 		placeholders = append(placeholders, placeholder)
-		args = append(args, uid, qnid, answers[i].Id, strings.Replace(answers[i].Text, "'", "''", -1), util.IntArrayToBinary(util.Index2Int(answers[i].Answer)))
+		args = append(args, uid, qnid, answers[i].Id, sid, strings.Replace(answers[i].Text, "'", "''", -1), util.IntArrayToBinary(util.Index2Int(answers[i].Answer)))
 	}
 	execSql = fmt.Sprintf(execSql, strings.Join(placeholders, ","))
 	_, err = o.Raw(execSql, args...).Exec()
+	if err != nil {
+		return
+	}
+	// 处理评分问题的答案
+	execSqlScore = fmt.Sprintf(execSqlScore, strings.Join(placeholdersScore, ","))
+	_, err = o.Raw(execSqlScore, argsScore...).Exec()
 	return
 }
 
