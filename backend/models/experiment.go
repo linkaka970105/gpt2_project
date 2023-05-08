@@ -75,7 +75,6 @@ order by ct desc`
 	}
 	// 2. 遍历判断用户是否已经做过该实验
 	for _, ex := range es {
-		fmt.Println("---- exid: ", ex.Id)
 		yes, err1 := HasParticipated(uid, ex.Id, 0)
 		if err1 != nil {
 			err = err1
