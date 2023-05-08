@@ -95,7 +95,8 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
                 "no_page": 0,
                 "countdown": 20,
                 "answer_page": 0,
-                "answer_time_countdown": 0
+                "answer_time_countdown": 0,
+                "get_chat_from": 0
             },
             {
                 "id": 2,
@@ -109,7 +110,8 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
                 "no_page": 4,
                 "countdown": 20,
                 "answer_page": 0,
-                "answer_time_countdown": 0
+                "answer_time_countdown": 0,
+                "get_chat_from": 0
             },
             {
                 "id": 3,
@@ -123,7 +125,8 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
                 "no_page": 0,
                 "countdown": 20,
                 "answer_page": 0,
-                "answer_time_countdown": 0
+                "answer_time_countdown": 0,
+                "get_chat_from": 0
             },
             {
                 "id": 4,
@@ -137,7 +140,8 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
                 "no_page": 0,
                 "countdown": 20,
                 "answer_page": 0,
-                "answer_time_countdown": 0
+                "answer_time_countdown": 0,
+                "get_chat_from": 0
             },
             {
                 "id": 5,
@@ -151,7 +155,8 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
                 "no_page": 0,
                 "countdown": 0,
                 "answer_page": 1,
-                "answer_time_countdown": 120
+                "answer_time_countdown": 120,
+                "get_chat_from": 0
             },
             {
                 "id": 6,
@@ -165,7 +170,8 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
                 "no_page": 0,
                 "countdown": 0,
                 "answer_page": 1,
-                "answer_time_countdown": 240
+                "answer_time_countdown": 240,
+                "get_chat_from": 5
             }
         ],
         "questionnaire": {
@@ -212,20 +218,21 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
 
 ### guide_pages
 
-| 参数名                   | 类型     | 说明                                                                    |
-| --------------------- | ------ |:--------------------------------------------------------------------- |
-| id                    | int    | 提示信息页id                                                               |
-| content               | string | 页面文本内容，最好支持html标签                                                     |
-| next_button           | int    | 是否有下一页的按钮，1为是，0为否                                                     |
-| yes_or_no             | int    | 是否有"是"和“否”的按钮，1为是，0为否                                                 |
-| chat                  | int    | 是否是实验的聊天页面，1为是，0为否                                                    |
-| chat_times            | int    | 限制问问题次数，0为不限制，3为限制3次，以此类推                                             |
-| next_page             | int    | 表示下一页按钮跳转到哪个页面(用页面id来定位页面)                                            |
-| yes_page              | int    | 表示"是"按钮跳转到哪个页面(用页面id来定位页面)                                            |
-| no_page               | int    | 表示"否"按钮跳转到哪个页面(用页面id来定位页面)                                            |
+| 参数名                | 类型   | 说明                                                         |
+| --------------------- | ------ | :----------------------------------------------------------- |
+| id                    | int    | 提示信息页id                                                 |
+| content               | string | 页面文本内容，最好支持html标签                               |
+| next_button           | int    | 是否有下一页的按钮，1为是，0为否                             |
+| yes_or_no             | int    | 是否有"是"和“否”的按钮，1为是，0为否                         |
+| chat                  | int    | 是否是实验的聊天页面，1为是，0为否                           |
+| chat_times            | int    | 限制问问题次数，0为不限制，3为限制3次，以此类推              |
+| next_page             | int    | 表示下一页按钮跳转到哪个页面(用页面id来定位页面)             |
+| yes_page              | int    | 表示"是"按钮跳转到哪个页面(用页面id来定位页面)               |
+| no_page               | int    | 表示"否"按钮跳转到哪个页面(用页面id来定位页面)               |
 | countdown             | int    | 页面最短阅读时间，0表示不限制，60表示最少阅读60s才能点击按钮（即最短阅读时间结束之前按钮可以采取置灰操作，同时显示相应的倒计时时间） |
-| answer_page           | int    | 是否是回答页面，1为是，0为否，如果是聊天页面则在完成聊天后显示答案提交框，供提交实验答案                         |
+| answer_page           | int    | 是否是回答页面，1为是，0为否，如果是聊天页面则在完成聊天后显示答案提交框，供提交实验答案 |
 | answer_time_countdown | int    | 回答问题的时间限制，0代表不做限制，60代表限制60s回答时间，建议也显示个倒计时，超过限定时间则不允许提交答案（提交按钮置灰之类的操作） |
+| get_chat_from         | int    | 该页面从哪个页面id获取聊天的记录copy显示                     |
 
 ### 特殊说明：
 
