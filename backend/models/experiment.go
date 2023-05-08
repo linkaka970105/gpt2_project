@@ -21,6 +21,7 @@ type GuidePage struct {
 	YesOrNo             int    `json:"yes_or_no"`
 	Chat                int    `json:"chat"`
 	ChatTimes           int    `json:"chat_times"`
+	ChatTips            string `json:"chat_tips"`
 	SaveChatInfo        int    `json:"save_chat_info"`
 	GetChatFrom         int    `json:"get_chat_from"`
 	NextPage            int    `json:"next_page"`
