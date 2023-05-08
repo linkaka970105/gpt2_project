@@ -21,6 +21,8 @@ type GuidePage struct {
 	YesOrNo             int    `json:"yes_or_no"`
 	Chat                int    `json:"chat"`
 	ChatTimes           int    `json:"chat_times"`
+	SaveChatInfo        int    `json:"save_chat_info"`
+	GetChatFrom         int    `json:"get_chat_from"`
 	NextPage            int    `json:"next_page"`
 	YesPage             int    `json:"yes_page"`
 	NoPage              int    `json:"no_page"`
@@ -91,9 +93,6 @@ order by ct desc`
 		if err != nil {
 			return
 		}
-		for i := 0; i < len(e.GuidePages); i++ {
-			e.GuidePages[i].Content = strings.Replace(strings.Replace(e.GuidePages[i].Content, " ", "&nbsp;", -1), "\n", "<br>", -1)
-		}
 
 		sqlTpl = `select *
 			from gpt_project.questionnaire
@@ -117,7 +116,6 @@ order by ct desc`
 			return
 		}
 		for i := range e.Questionnaire.Questions {
-			e.Questionnaire.Questions[i].Content = strings.Replace(strings.Replace(e.Questionnaire.Questions[i].Content, " ", "&nbsp;", -1), "", "<br>", -1)
 			if e.Questionnaire.Questions[i].Choices != "" {
 				e.Questionnaire.Questions[i].Choice = strings.Split(e.Questionnaire.Questions[i].Choices, ";")
 			}

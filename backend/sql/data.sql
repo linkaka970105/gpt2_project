@@ -33,6 +33,8 @@ create table gpt_project.guide_page
     yes_or_no             tinyint       default 0                 not null comment '是否有是否按钮，1为是0位否',
     chat                  tinyint       default 0                 not null comment '是否是聊天界面，1为是0位否',
     chat_times            int           default 0                 not null comment '限制聊天次数',
+    save_chat_info        tinyint       default 0                 not null comment '是否保存此页面的聊天信息,1为是，0为否',
+    get_chat_from         int           default 0                 not null comment '从哪个页面id获取聊天信息',
     next_page             int           default 0                 not null comment '下一页id',
     yes_page              int           default 0                 not null comment '是按钮的id',
     no_page               int           default 0                 not null comment '否按钮的id',
