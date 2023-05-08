@@ -97,7 +97,8 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
                 "answer_page": 0,
                 "answer_time_countdown": 0,
                 "get_chat_from": 0,
-                "save_chat_info": 0
+                "save_chat_info": 0,
+                "chat_tips":""
             },
             {
                 "id": 2,
@@ -113,7 +114,8 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
                 "answer_page": 0,
                 "answer_time_countdown": 0,
                 "get_chat_from": 0,
-                "save_chat_info": 0
+                "save_chat_info": 0,
+                "chat_tips":""
             },
             {
                 "id": 3,
@@ -129,7 +131,8 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
                 "answer_page": 0,
                 "answer_time_countdown": 0,
                 "get_chat_from": 0,
-                "save_chat_info": 0
+                "save_chat_info": 0,
+                "chat_tips":""
             },
             {
                 "id": 4,
@@ -145,7 +148,8 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
                 "answer_page": 0,
                 "answer_time_countdown": 0,
                 "get_chat_from": 0,
-                "save_chat_info": 0
+                "save_chat_info": 0,
+                "chat_tips":""
             },
             {
                 "id": 5,
@@ -161,7 +165,8 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
                 "answer_page": 1,
                 "answer_time_countdown": 120,
                 "get_chat_from": 0,
-                "save_chat_info": 1
+                "save_chat_info": 1,
+                "chat_tips":"xxxxx"
             },
             {
                 "id": 6,
@@ -177,7 +182,8 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
                 "answer_page": 1,
                 "answer_time_countdown": 240,
                 "get_chat_from": 5,
-                "save_chat_info": 0
+                "save_chat_info": 0,
+                "chat_tips":"xxx"
             }
         ],
         "questionnaire": {
@@ -240,6 +246,7 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
 | answer_time_countdown | int    | 回答问题的时间限制，0代表不做限制，60代表限制60s回答时间，建议也显示个倒计时，超过限定时间则不允许提交答案（提交按钮置灰之类的操作） |
 | get_chat_from         | int    | 该页面从哪个页面id获取聊天的记录copy显示                     |
 | save_chat_info        | int    | 是否保存聊天记录，1位是，0为否                               |
+| chat_tips             | string | 聊天框提示标语                                               |
 
 ### 特殊说明：
 
