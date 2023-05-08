@@ -96,7 +96,8 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
                 "countdown": 20,
                 "answer_page": 0,
                 "answer_time_countdown": 0,
-                "get_chat_from": 0
+                "get_chat_from": 0,
+                "save_chat_info": 0
             },
             {
                 "id": 2,
@@ -111,7 +112,8 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
                 "countdown": 20,
                 "answer_page": 0,
                 "answer_time_countdown": 0,
-                "get_chat_from": 0
+                "get_chat_from": 0,
+                "save_chat_info": 0
             },
             {
                 "id": 3,
@@ -126,7 +128,8 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
                 "countdown": 20,
                 "answer_page": 0,
                 "answer_time_countdown": 0,
-                "get_chat_from": 0
+                "get_chat_from": 0,
+                "save_chat_info": 0
             },
             {
                 "id": 4,
@@ -141,7 +144,8 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
                 "countdown": 20,
                 "answer_page": 0,
                 "answer_time_countdown": 0,
-                "get_chat_from": 0
+                "get_chat_from": 0,
+                "save_chat_info": 0
             },
             {
                 "id": 5,
@@ -156,7 +160,8 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
                 "countdown": 0,
                 "answer_page": 1,
                 "answer_time_countdown": 120,
-                "get_chat_from": 0
+                "get_chat_from": 0,
+                "save_chat_info": 1
             },
             {
                 "id": 6,
@@ -171,7 +176,8 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
                 "countdown": 0,
                 "answer_page": 1,
                 "answer_time_countdown": 240,
-                "get_chat_from": 5
+                "get_chat_from": 5,
+                "save_chat_info": 0
             }
         ],
         "questionnaire": {
@@ -233,6 +239,7 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
 | answer_page           | int    | 是否是回答页面，1为是，0为否，如果是聊天页面则在完成聊天后显示答案提交框，供提交实验答案 |
 | answer_time_countdown | int    | 回答问题的时间限制，0代表不做限制，60代表限制60s回答时间，建议也显示个倒计时，超过限定时间则不允许提交答案（提交按钮置灰之类的操作） |
 | get_chat_from         | int    | 该页面从哪个页面id获取聊天的记录copy显示                     |
+| save_chat_info        | int    | 是否保存聊天记录，1位是，0为否                               |
 
 ### 特殊说明：
 
