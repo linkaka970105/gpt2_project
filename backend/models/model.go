@@ -4,11 +4,20 @@ import (
 	"github.com/astaxie/beego/orm"
 	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/gorilla/websocket"
 	openai "github.com/sashabaranov/go-openai"
+	"net/http"
 )
 
 var rt *redis.Client
 var gptClient *openai.Client
+var Upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
+}
 
 func init() {
 	//orm.RegisterDataBase("default", "mysql", "root:123456@tcp(127.0.0.1:3306)/test?charset=utf8")

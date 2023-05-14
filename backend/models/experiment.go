@@ -62,13 +62,18 @@ type questionnaireReq struct {
 	Answers []Answer `json:"answers"`
 }
 
-func GetExperiment(uid int) (e Experiment, err error) {
+func GetExperiment(uid, id int) (e Experiment, err error) {
 	// 1. 获取可用于展示的实验
 	o := orm.NewOrm()
 	sqlTpl := `select *
 from gpt_project.experiment
 where status = 1
 order by ct desc`
+	if id > 0 {
+		sqlTpl = fmt.Sprintf(`select *
+			from gpt_project.experiment
+			where id = %d`, id)
+	}
 	es := make([]Experiment, 0)
 	_, err = o.Raw(sqlTpl).QueryRows(&es)
 	if len(es) == 0 {
@@ -76,13 +81,16 @@ order by ct desc`
 	}
 	// 2. 遍历判断用户是否已经做过该实验
 	for _, ex := range es {
-		yes, err1 := HasParticipated(uid, ex.Id, 0)
-		if err1 != nil {
-			err = err1
-			return
-		}
-		if yes == 1 {
-			continue
+		if id == 0 {
+			// 当id > 0是做测试，此时不做是否参与过的判断
+			yes, err1 := HasParticipated(uid, ex.Id, 0)
+			if err1 != nil {
+				err = err1
+				return
+			}
+			if yes == 1 {
+				continue
+			}
 		}
 		e.Id = ex.Id
 		e.Topic = ex.Topic

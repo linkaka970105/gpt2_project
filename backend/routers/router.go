@@ -59,6 +59,7 @@ func init() {
 		),
 		beego.NSNamespace("/chat",
 			beego.NSRouter("/", &controllers.ChatController{}, "post:Chat"),
+			beego.NSRouter("/event_stream", &controllers.ChatController{}, "get:ChatStream"),
 		),
 	)
 	beego.AddNamespace(ns)

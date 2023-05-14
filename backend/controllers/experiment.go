@@ -14,6 +14,10 @@ type experimentReplyParams struct {
 	Answer string `form:"answer" json:"answer"`
 }
 
+type experimentParams struct {
+	ID int `form:"id" json:"id"`
+}
+
 type questionnaireReq struct {
 	ID      int             `json:"id"`
 	Answers []models.Answer `json:"answers"`
@@ -21,8 +25,19 @@ type questionnaireReq struct {
 
 func (c *ExperimentController) Experiment() {
 	uid := c.getUid()
+	params := experimentParams{}
+	if c.Ctx.Request.Header.Get("Content-Type") == "application/json" {
+		if err := json.Unmarshal(c.Ctx.Input.RequestBody, &params); err != nil {
+			c.echoErr(err)
+			return
+		}
+	} else {
+		if ok, err := c.parseAndValid(&params); !ok || err != nil {
+			return
+		}
+	}
 	// 获取实验
-	ex, err := models.GetExperiment(uid)
+	ex, err := models.GetExperiment(uid, params.ID)
 	if err != nil {
 		c.echoErr(err)
 		return
