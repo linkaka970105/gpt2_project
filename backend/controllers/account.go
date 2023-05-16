@@ -47,7 +47,7 @@ type delUserParams struct {
 }
 
 type loginInfo struct {
-	Token     string `json:"token"`
+	Token string `json:"token"`
 }
 
 func (c *AccountController) Login() {
@@ -146,8 +146,8 @@ func (c *AccountController) EditUser() {
 		params.Uid = c.getUid()
 	}
 	err := models.InsertOrUpdateUser(models.Users{
-		Uid:       params.Uid,
-		Password:  params.Password,
+		Uid:      params.Uid,
+		Password: params.Password,
 	})
 	if err != nil {
 		c.echoErr(err)
@@ -194,6 +194,9 @@ func CheckAuthorization(ctx *beegoctx.Context) {
 		return
 	}
 	token := ctx.Request.Header.Get("X-Token")
+	if token == "" {
+		token = ctx.Request.URL.Query().Get("token")
+	}
 	// check token
 	uid, _ := models.GetUIDByToken(token)
 	if uid == 0 {
