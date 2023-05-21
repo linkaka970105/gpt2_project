@@ -89,7 +89,17 @@ order by ct desc`
 				return
 			}
 			if yes == 1 {
-				continue
+				// 做过实验的需要完成问卷，如果实验做过，问卷没做过则只返回问卷部分
+				yes, err1 = HasReplyQuestion(uid, ex.Questionnaire.Id)
+				if err1 != nil {
+					err = err1
+					return
+				}
+				if yes == 1 {
+					continue
+				} else {
+					ex.GuidePages = []GuidePage{}
+				}
 			}
 		}
 		e.Id = ex.Id
@@ -140,6 +150,23 @@ func ParticipatedRecord(uid, exid int, content string, access int) (err error) {
 	o := orm.NewOrm()
 	_, err = o.Raw("insert into gpt_project.experiment_reply (uid, exid, content, access) values (?, ?, ?, ?)",
 		uid, exid, content, access).Exec()
+	return
+}
+
+func HasReplyQuestion(uid, qnid int) (yes int, err error) {
+	o := orm.NewOrm()
+	sqlTpl := `select 1
+from gpt_project.question_reply
+where uid = ?
+  and qnid = ? limit 1`
+	err = o.Raw(sqlTpl, uid, qnid).QueryRow(&yes)
+	if err != nil {
+		if err == orm.ErrNoRows {
+			err = nil
+		} else {
+			return
+		}
+	}
 	return
 }
 
