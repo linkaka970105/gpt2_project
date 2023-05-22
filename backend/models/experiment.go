@@ -4,8 +4,14 @@ import (
 	"fmt"
 	"github.com/astaxie/beego/orm"
 	"gpt2_project/backend/util"
+	"math/rand"
 	"strings"
+	"time"
 )
+
+type ExperimentGroup struct {
+	Id int `json:"id"`
+}
 
 type Experiment struct {
 	Id            int           `json:"id"`
@@ -63,87 +69,125 @@ type questionnaireReq struct {
 }
 
 func GetExperiment(uid, id int) (e Experiment, err error) {
-	// 1. 获取可用于展示的实验
+	// 1. 获取可用于展示的实验组
 	o := orm.NewOrm()
 	sqlTpl := `select *
-from gpt_project.experiment
+from gpt_project.experiment_group
 where status = 1
-order by ct desc`
+order by ct desc limit 1`
 	if id > 0 {
 		sqlTpl = fmt.Sprintf(`select *
-			from gpt_project.experiment
+			from gpt_project.experiment_group
 			where id = %d`, id)
 	}
-	es := make([]Experiment, 0)
-	_, err = o.Raw(sqlTpl).QueryRows(&es)
-	if len(es) == 0 {
+	egs := make([]ExperimentGroup, 0)
+	_, err = o.Raw(sqlTpl).QueryRows(&egs)
+	if len(egs) == 0 {
 		return
 	}
-	// 2. 遍历判断用户是否已经做过该实验
-	for _, ex := range es {
-		if id == 0 {
-			// 当id > 0是做测试，此时不做是否参与过的判断
-			yes, err1 := HasParticipated(uid, ex.Id, 0)
-			if err1 != nil {
-				err = err1
-				return
-			}
-			if yes == 1 {
-				// 做过实验的需要完成问卷，如果实验做过，问卷没做过则只返回问卷部分
-				yes, err1 = HasReplyQuestion(uid, ex.Questionnaire.Id)
-				if err1 != nil {
-					err = err1
-					return
-				}
-				if yes == 1 {
-					continue
-				} else {
-					ex.GuidePages = []GuidePage{}
-				}
-			}
-		}
-		e.Id = ex.Id
-		e.Topic = ex.Topic
-		sqlTpl = `select *
-			from gpt_project.guide_page
-			where exid = ?`
-		_, err = o.Raw(sqlTpl, ex.Id).QueryRows(&e.GuidePages)
-		if err != nil {
+	// 判断有没有做过实验组的实验
+	exid, err := HasParticipatedEG(uid, egs[0].Id)
+	if err != nil {
+		return
+	}
+	if exid > 0 {
+		// 有做过实验则判断是否做过问卷
+		yes, err1 := HasReplyQuestionEg(uid, egs[0].Id)
+		if err1 != nil {
+			err = err1
 			return
 		}
-
-		sqlTpl = `select *
+		if yes == 1 {
+			// 如果做过问卷则返回空值
+			return
+		} else {
+			// 如果没做过问卷则返回问卷数据
+			e.Id = exid
+			sqlTpl = `select *
 			from gpt_project.questionnaire
 			where exid = ? limit 1`
-
-		err = o.Raw(sqlTpl, ex.Id).QueryRow(&e.Questionnaire)
-		if err != nil {
-			if err == orm.ErrNoRows {
-				err = nil
-			} else {
-				return
+			err = o.Raw(sqlTpl, exid).QueryRow(&e.Questionnaire)
+			if err != nil {
+				if err == orm.ErrNoRows {
+					err = nil
+				} else {
+					return
+				}
 			}
-		}
-		sqlTpl = `select *
+			sqlTpl = `select *
 		from gpt_project.question
 		where qnid = ?
 		order by id`
-
-		_, err = o.Raw(sqlTpl, e.Questionnaire.Id).QueryRows(&e.Questionnaire.Questions)
+			_, err = o.Raw(sqlTpl, e.Questionnaire.Id).QueryRows(&e.Questionnaire.Questions)
+			if err != nil {
+				return
+			}
+			for i := range e.Questionnaire.Questions {
+				if e.Questionnaire.Questions[i].Choices != "" {
+					e.Questionnaire.Questions[i].Choice = strings.Split(e.Questionnaire.Questions[i].Choices, ";")
+				}
+				if e.Questionnaire.Questions[i].ScoreText != "" {
+					e.Questionnaire.Questions[i].ScoreTexts = strings.Split(e.Questionnaire.Questions[i].ScoreText, ";")
+				}
+			}
+			return
+		}
+	} else {
+		// 没做过实验则直接随机返回相应的在线实验
+		sqlTpl = `select id
+from gpt_project.experiment
+where id in (select member_id
+             from gpt_project.group_member
+             where group_id = ?)
+  and status = 1`
+		exids := make([]int, 0)
+		_, err = o.Raw(sqlTpl, egs[0].Id).QueryRows(&exids)
 		if err != nil {
 			return
 		}
-		for i := range e.Questionnaire.Questions {
-			if e.Questionnaire.Questions[i].Choices != "" {
-				e.Questionnaire.Questions[i].Choice = strings.Split(e.Questionnaire.Questions[i].Choices, ";")
+		if len(exids) == 0 {
+			return
+		} else {
+			// 随机选一个
+			exid = getRandomNumber(exids)
+			e.Id = exid
+			sqlTpl = `select *
+			from gpt_project.guide_page
+			where exid = ?`
+			_, err = o.Raw(sqlTpl, exid).QueryRows(&e.GuidePages)
+			if err != nil {
+				return
 			}
-			if e.Questionnaire.Questions[i].ScoreText != "" {
-				e.Questionnaire.Questions[i].ScoreTexts = strings.Split(e.Questionnaire.Questions[i].ScoreText, ";")
+			sqlTpl = `select *
+			from gpt_project.questionnaire
+			where exid = ? limit 1`
+			err = o.Raw(sqlTpl, exid).QueryRow(&e.Questionnaire)
+			if err != nil {
+				if err == orm.ErrNoRows {
+					err = nil
+				} else {
+					return
+				}
 			}
+			sqlTpl = `select *
+		from gpt_project.question
+		where qnid = ?
+		order by id`
+			_, err = o.Raw(sqlTpl, e.Questionnaire.Id).QueryRows(&e.Questionnaire.Questions)
+			if err != nil {
+				return
+			}
+			for i := range e.Questionnaire.Questions {
+				if e.Questionnaire.Questions[i].Choices != "" {
+					e.Questionnaire.Questions[i].Choice = strings.Split(e.Questionnaire.Questions[i].Choices, ";")
+				}
+				if e.Questionnaire.Questions[i].ScoreText != "" {
+					e.Questionnaire.Questions[i].ScoreTexts = strings.Split(e.Questionnaire.Questions[i].ScoreText, ";")
+				}
+			}
+			return
 		}
-		return
 	}
-	return
 }
 
 func ParticipatedRecord(uid, exid int, content string, access int) (err error) {
@@ -178,6 +222,48 @@ where uid = ?
   and exid = ?
   and access = ?`
 	err = o.Raw(sqlTpl, uid, exid, access).QueryRow(&yes)
+	if err != nil {
+		if err == orm.ErrNoRows {
+			err = nil
+		} else {
+			return
+		}
+	}
+	return
+}
+
+func HasReplyQuestionEg(uid, egid int) (yes int, err error) {
+	o := orm.NewOrm()
+	sqlTpl := `select 1
+from gpt_project.question_reply
+where uid = ?
+  and qnid in (select id
+               from gpt_project.questionnaire
+               where exid in (select member_id
+                              from gpt_project.group_member
+                              where group_id = ?))
+limit 1`
+	err = o.Raw(sqlTpl, uid, egid).QueryRow(&yes)
+	if err != nil {
+		if err == orm.ErrNoRows {
+			err = nil
+		} else {
+			return
+		}
+	}
+	return
+}
+
+func HasParticipatedEG(uid, egid int) (exid int, err error) {
+	o := orm.NewOrm()
+	sqlTpl := `select exid
+from gpt_project.experiment_reply
+where exid in (select member_id
+               from gpt_project.group_member
+               where group_id = ?)
+  and uid = ?
+  and access = 0 limit 1`
+	err = o.Raw(sqlTpl, egid, uid).QueryRow(&exid)
 	if err != nil {
 		if err == orm.ErrNoRows {
 			err = nil
@@ -247,4 +333,12 @@ func ChatRecord(uid, exid int, message, reply string) (err error) {
 	_, err = o.Raw("insert into gpt_project.experiment_chat_history (uid, exid, query, gpt_reply) values (?, ?, ?, ?)",
 		uid, exid, message, reply).Exec()
 	return
+}
+
+func getRandomNumber(numbers []int) int {
+	rand.Seed(time.Now().UnixNano()) // 根据当前时间设置随机种子
+
+	randomIndex := rand.Intn(len(numbers)) // 生成一个 0 到 len(numbers)-1 之间的随机索引
+
+	return numbers[randomIndex]
 }

@@ -131,3 +131,25 @@ create table gpt_project.experiment_chat_history
     ct        datetime      default CURRENT_TIMESTAMP not null comment '创建时间',
     ut        datetime      default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
 ) comment 'gpt实验问答历史记录表' charset = utf8;
+
+create table experiment_group
+(
+    id     int(11) unsigned auto_increment
+        primary key,
+    name   varchar(2048) default ''                not null comment '实验组名称',
+    status tinyint       default 0                 not null comment '实验组状态,1为在线，0为下线',
+    ct     datetime      default CURRENT_TIMESTAMP not null comment '创建时间',
+    ut     datetime      default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
+)
+    comment '实验组表' charset = utf8;
+
+create table group_member
+(
+    id        int(11) unsigned auto_increment
+        primary key,
+    group_id  int      default 0                 not null comment '实验组id',
+    member_id int      default 0                 not null comment '实验组成员id',
+    ct        datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    ut        datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
+)
+    comment '实验组成员表' charset = utf8;
