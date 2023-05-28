@@ -137,8 +137,7 @@ func GetGptRespStream(uid int, msg string, conn *websocket.Conn, c *beegoctx.Con
 			return
 		}
 		content += response.Choices[0].Delta.Content
-		fmt.Println("content: ", content)
-		err = conn.WriteJSON(response.Choices[0].Delta.Content)
+		err = conn.WriteMessage(websocket.TextMessage, []byte(response.Choices[0].Delta.Content))
 		if err != nil {
 			fmt.Println("Error writing JSON:", err)
 			return
