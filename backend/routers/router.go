@@ -20,6 +20,9 @@ func init() {
 			beego.NSRouter("/logout", &controllers.AccountController{}, "post:Logout"),
 			beego.NSRouter("/user_info", &controllers.AccountController{}, "get:UserInfo"),
 		),
+		beego.NSNamespace("/basic_info",
+			beego.NSRouter("/", &controllers.AccountController{}, "get:BasicInfo"),
+		),
 		beego.NSNamespace("/message",
 			// 1. 创建消息
 			// 2. 查看消息

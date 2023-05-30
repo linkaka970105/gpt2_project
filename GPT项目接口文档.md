@@ -20,7 +20,7 @@
 - [ChatGPT聊天事件流](#ChatGPT聊天事件流)
 - [实验提交答案](#实验提交答案)
 - [问卷提交答案](#问卷提交答案)
-
+- [获取页面基础信息](#获取页面基础信息)
 
 ## 注册登录
 
@@ -96,6 +96,8 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
                 "next_page": 2,
                 "yes_page": 0,
                 "no_page": 0,
+                "word_limit_min": 0,
+                "word_limit_max": 0,
                 "countdown": 20,
                 "answer_page": 0,
                 "answer_time_countdown": 0,
@@ -113,6 +115,8 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
                 "next_page": 0,
                 "yes_page": 3,
                 "no_page": 4,
+                "word_limit_min": 0,
+                "word_limit_max": 0,
                 "countdown": 20,
                 "answer_page": 0,
                 "answer_time_countdown": 0,
@@ -130,6 +134,8 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
                 "next_page": 5,
                 "yes_page": 0,
                 "no_page": 0,
+                "word_limit_min": 0,
+                "word_limit_max": 0,
                 "countdown": 20,
                 "answer_page": 0,
                 "answer_time_countdown": 0,
@@ -147,6 +153,8 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
                 "next_page": 5,
                 "yes_page": 0,
                 "no_page": 0,
+                "word_limit_min": 0,
+                "word_limit_max": 0,
                 "countdown": 20,
                 "answer_page": 0,
                 "answer_time_countdown": 0,
@@ -164,6 +172,8 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
                 "next_page": 6,
                 "yes_page": 0,
                 "no_page": 0,
+                "word_limit_min": 0,
+                "word_limit_max": 0
                 "countdown": 0,
                 "answer_page": 1,
                 "answer_time_countdown": 120,
@@ -181,6 +191,8 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
                 "next_page": 0,
                 "yes_page": 0,
                 "no_page": 0,
+                "word_limit_min": 100,
+                "word_limit_max": 500,
                 "countdown": 0,
                 "answer_page": 1,
                 "answer_time_countdown": 240,
@@ -250,6 +262,8 @@ X-Token: D01B0E972A264FA08EA8F12EF1C0DAB6
 | get_chat_from         | int    | 该页面从哪个页面id获取聊天的记录copy显示                     |
 | save_chat_info        | int    | 是否保存聊天记录，1位是，0为否                               |
 | chat_tips             | string | 聊天框提示标语                                               |
+| word_limit_min        | int    | 答案提交页面，答案允许提交的长度最短需多少字，为0代表不限制最小值，100代表最少100字 |
+| word_limit_max        | int    | 答案提交页面，答案允许提交的长度最长不超过多少字，为0代表不限制最大值，500代表最多不能超过500字 |
 
 ### 特殊说明：
 
@@ -442,5 +456,32 @@ TEXT：都
 
 无
 
+## 获取页面基础信息
 
+**接口描述：** 获取页面基础信息
+
+**请求URL：** /api/basic_info
+
+**请求方式：** GET
+
+### 请求参数：
+无
+
+### 返回示例：
+
+```json
+{
+    "code": 10000,
+    "index_bottom_tips": "<p style=\"text-align: left;\"><span style=\"color: #e03e2d;\">注：</span>本站仅做科研用途，我们郑重承诺您使用中涉及的所有数据和回答只用于学术研究，对您提供的信息我们将匿名处理并严格保密，其他个人、组织或企业并不会得知您个人回答的情况。答案并无对错之分，请您依据自身实际情况填写即可，您的回答对我们的研究将会有非常大的帮助。</p>",
+    "login_title": "<p style=\"text-align: center;\">任意输入邮箱和密码即可登录，登录既注册。<br data-v-7d9ffbf3=\"\" />注册限时开放，请牢记您的账号和密码</p>",
+    "message": "成功"
+}
+```
+
+### 返回参数说明：
+
+| 参数名   | 类型     | 说明         |
+| ----- | ------ | ---------- |
+| login_title | string | 登录页title,希望支持html |
+| index_bottom_tips | string | 引导信息页首页底部提示信息，希望支持html |
 

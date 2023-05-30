@@ -36,6 +36,8 @@ type GuidePage struct {
 	Countdown           int    `json:"countdown"`
 	AnswerPage          int    `json:"answer_page"`
 	AnswerTimeCountdown int    `json:"answer_time_countdown"`
+	WordLimitMin        int    `json:"word_limit_min"`
+	WordLimitMax        int    `json:"word_limit_max"`
 }
 
 type Questionnaire struct {

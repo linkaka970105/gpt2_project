@@ -188,6 +188,18 @@ func (c *AccountController) DelUser() {
 	c.echoJSON(map[string]interface{}{})
 }
 
+func (c *AccountController) BasicInfo() {
+	basicInfo, err := models.GetBasicInfo()
+	if err != nil {
+		c.echoErr(err)
+		return
+	}
+	c.echoJSON(map[string]interface{}{
+		"login_title":       basicInfo.LoginTitle,
+		"index_bottom_tips": basicInfo.IndexBottomTips,
+	})
+}
+
 func CheckAuthorization(ctx *beegoctx.Context) {
 	routerPath := ctx.Request.URL.Path
 	if isExcluedRouterPath(routerPath) {
@@ -209,6 +221,7 @@ func CheckAuthorization(ctx *beegoctx.Context) {
 var excludeRouterPathes = []string{
 	"/api/account/login",
 	"/api/upload",
+	"/api/basic_info",
 }
 
 func isExcluedRouterPath(path string) bool {

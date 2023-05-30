@@ -21,6 +21,11 @@ type Users struct {
 	Token    string `json:"token"`
 }
 
+type BasicInfo struct {
+	LoginTitle      string `json:"login_title"`
+	IndexBottomTips string `json:"index_bottom_tips"`
+}
+
 type ListUserQuery struct {
 	School    int    `form:"school"`           // 学院
 	Class     int    `form:"class"`            // 班级
@@ -228,6 +233,19 @@ func DelToken(token string, uid int) (err error) {
 		return
 	}
 	if err = RedisCli().Del(makeTokenUIDKey(token)).Err(); err != nil {
+		return
+	}
+	return
+}
+
+func GetBasicInfo() (b BasicInfo, err error) {
+	o := orm.NewOrm()
+	sqlTpl := `select login_title, index_bottom_tips
+				from gpt_project.basic_info
+				order by id desc
+				limit 1`
+	err = o.Raw(sqlTpl).QueryRow(&b)
+	if err != nil {
 		return
 	}
 	return
