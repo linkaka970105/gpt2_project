@@ -33,18 +33,10 @@ func (c *ChatController) Chat() {
 		c.echoErr(err)
 		return
 	}
-	if params.Id > 0 {
-		err := models.ChatRecord(uid, params.Id, params.Message, reply)
-		if err != nil {
-			c.echoErr(err)
-			return
-		}
-	} else {
-		err := models.ChatRecord(uid, 0, "", "")
-		if err != nil {
-			c.echoErr(err)
-			return
-		}
+	err = models.ChatRecord(uid, params.Id, params.Message, reply)
+	if err != nil {
+		c.echoErr(err)
+		return
 	}
 	c.echoJSON(map[string]interface{}{"reply": reply})
 }
@@ -74,18 +66,10 @@ func (c *ChatController) ChatStream() {
 		c.echoErr(err)
 		return
 	}
-	if params.Id > 0 {
-		err := models.ChatRecord(uid, params.Id, params.Message, reply)
-		if err != nil {
-			c.echoErr(err)
-			return
-		}
-	} else {
-		err := models.ChatRecord(uid, 0, "", "")
-		if err != nil {
-			c.echoErr(err)
-			return
-		}
+	err = models.ChatRecord(uid, params.Id, params.Message, reply)
+	if err != nil {
+		c.echoErr(err)
+		return
 	}
 	c.echoJSON(map[string]interface{}{"reply": reply})
 }
